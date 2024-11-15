@@ -42,7 +42,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
           nextSlideMessage: 'Next slide',
           slideLabelMessage: '{{index}} / {{slidesLength}}',
         }}
-        lazy={true}
+        lazy={false}
         preloadImages={false}
         watchSlidesProgress
       >
