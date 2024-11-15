@@ -7,6 +7,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Get PNPM version from package.json
+RUN corepack enable && corepack prepare yarn@3.2.3 --activate
 RUN export PNPM_VERSION=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')
 
 COPY package.json pnpm-lock.yaml ./
