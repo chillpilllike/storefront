@@ -22,6 +22,8 @@ RUN pnpm install @radix-ui/react-slot
 RUN pnpm install class-variance-authority
 RUN pnpm install embla-carousel-react
 RUN pnpm install tailwind-merge
+RUN pnpm install swiper
+
 
 
 # Builder stage to build the application
