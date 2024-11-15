@@ -8,7 +8,6 @@ import { Navigation, Thumbs, A11y } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
-// Removed: import 'swiper/css/lazy';
 import { ProductImageWrapper } from '@/ui/atoms/ProductImageWrapper';
 
 interface Image {
@@ -23,13 +22,14 @@ interface ProductImageGalleryProps {
 }
 
 export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images, thumbnail }) => {
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+  const [thumbsSwiper, setThumbsSwiper] = useState<null | any>(null); // Using 'any' for simplicity
 
   // Combine thumbnail and images if thumbnail exists and not already in images
   const allImages = thumbnail && !images.some(img => img.id === thumbnail.id) ? [thumbnail, ...images] : images;
 
   return (
     <div className="product-gallery">
+      {/* Main Swiper */}
       <Swiper
         modules={[Navigation, Thumbs, A11y]}
         spaceBetween={10}
@@ -41,8 +41,6 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
           nextSlideMessage: 'Next slide',
           slideLabelMessage: '{{index}} / {{slidesLength}}',
         }}
-        // Removed: lazy={true}
-        // Removed: preloadImages={false}
         watchSlidesProgress
       >
         {allImages.map((image) => (
@@ -58,6 +56,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
         ))}
       </Swiper>
 
+      {/* Thumbnails Swiper */}
       {allImages.length > 1 && (
         <Swiper
           modules={[Navigation, Thumbs, A11y]}
