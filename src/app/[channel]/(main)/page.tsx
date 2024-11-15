@@ -3,9 +3,9 @@ import { executeGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/ProductList";
 
 export const metadata = {
-	title: "ACME Storefront, powered by Saleor & Next.js",
+	title: "SecretGreen: Your Trusted Source for Home Improvement, DIY, and Garden Tools",
 	description:
-		"Storefront Next.js Example for building performant e-commerce experiences with Saleor - the composable, headless commerce platform for global brands.",
+		"Discover high-quality home improvement, DIY, and garden tools at SecretGreen. From innovative gardening solutions to reliable DIY essentials, we empower your projects with tools built for performance and durability. Shop now for unbeatable quality and value!",
 };
 
 export default async function Page({ params }: { params: { channel: string } }) {
