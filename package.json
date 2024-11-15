@@ -42,8 +42,7 @@
 		"urql": "4.0.6",
 		"xss": "1.0.15",
 		"yup": "1.3.2",
-		"zustand": "4.4.6",
-		"@saleor/macaw-ui": "^1.1.14"
+		"zustand": "4.4.6"
 	},
 	"devDependencies": {
 		"@graphql-codegen/cli": "5.0.0",
