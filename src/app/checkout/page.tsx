@@ -1,8 +1,8 @@
-import { invariant } from "ts-invariant";
+timport { invariant } from "ts-invariant";
 import { RootWrapper } from "./pageWrapper";
 
 export const metadata = {
-	title: "Checkout · Saleor Storefront example",
+	title: "Checkout · Secretgreen.com.au",
 };
 
 export default function CheckoutPage({
