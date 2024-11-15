@@ -1,5 +1,3 @@
-// Your existing page file, e.g., /app/products/[slug]/page.tsx
-
 import edjsHTML from "editorjs-html";
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
@@ -262,7 +260,7 @@ export default async function Page({
         <ProductList products={products.edges.map(edge => edge.node)} />
         {products.pageInfo.hasNextPage && (
           <a
-            href={`?cursor=${products.pageInfo.endCursor}`}
+            href={`?${newSearchParams.toString()}`}
             className="mt-4 inline-block text-blue-500 hover:underline"
           >
             Load More
