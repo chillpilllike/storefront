@@ -1,4 +1,3 @@
-# Example GraphQL Query
 query ProductDetails($slug: String!, $channel: String!) {
   product(slug: $slug, channel: $channel) {
     id
