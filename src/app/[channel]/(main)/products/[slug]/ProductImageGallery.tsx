@@ -4,7 +4,7 @@
 
 import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Thumbs, A11y } from 'swiper/modules'; // Corrected import path
+import { Navigation, Thumbs, A11y } from 'swiper/modules'; // Ensure correct import path based on Swiper version
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
@@ -13,7 +13,7 @@ import { ProductImageWrapper } from '@/ui/atoms/ProductImageWrapper';
 interface Image {
   id: string;
   url: string;
-  alt?: string;
+  alt?: string | null; // Allowing null values
 }
 
 interface ProductImageGalleryProps {
@@ -47,7 +47,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
           <SwiperSlide key={image.id}>
             <ProductImageWrapper
               priority={false}
-              alt={image.alt ?? 'Product Image'}
+              alt={image.alt ?? 'Product Image'} // Ensuring alt is a string
               width={1024}
               height={1024}
               src={image.url}
@@ -74,7 +74,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
             <SwiperSlide key={`thumb-${image.id}`}>
               <ProductImageWrapper
                 priority={false}
-                alt={image.alt ?? 'Product Thumbnail'}
+                alt={image.alt ?? 'Product Thumbnail'} // Ensuring alt is a string
                 width={200}
                 height={200}
                 src={image.url}
