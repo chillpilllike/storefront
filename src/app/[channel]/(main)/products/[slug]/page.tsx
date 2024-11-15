@@ -15,7 +15,7 @@ import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 import { ProductsPerPage } from "@/app/related";
 import { ProductList } from "@/ui/components/ProductList";
-import { Accordion, AccordionItem } from "@saleor/macaw-ui"; // Added import
+import { Accordion } from "@saleor/macaw-ui"; // Added import
 
 const parser = edjsHTML();
 
