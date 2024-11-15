@@ -14,7 +14,7 @@ import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument, P
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 import { ProductsPerPage } from "@/app/related";
-import { ProductList } from "@/ui/components/ProductList"; // Added import
+import { ProductList } from "@/ui/components/ProductList"; // Ensure this import is necessary
 
 const parser = edjsHTML();
 
@@ -81,7 +81,7 @@ export default async function Page({
     searchParams,
 }: {
     params: { slug: string; channel: string };
-    searchParams: { variant?: string; cursor?: string };
+    searchParams: { variant?: string };
 }) {
     // Fetch Product Details
     const { product } = await executeGraphQL(ProductDetailsDocument, {
@@ -190,10 +190,6 @@ export default async function Page({
         notFound();
     }
 
-    const newSearchParams = new URLSearchParams({
-        ...(products.pageInfo.endCursor && { cursor: products.pageInfo.endCursor }),
-    });
-
     return (
         <section className="mx-auto grid max-w-7xl p-8">
             {/* Existing Product Details */}
@@ -251,8 +247,7 @@ export default async function Page({
             <div className="mt-16">
                 <h2 className="mb-6 text-2xl font-semibold">More Products</h2>
                 <ProductList products={products.edges.map(edge => edge.node)} />
-                {/* If you decide to include Pagination in the future, you can uncomment the line below */}
-                {/* <Pagination cursor={products.pageInfo.endCursor} /> */}
+                {/* Pagination is not included as per current requirements */}
             </div>
         </section>
     );
