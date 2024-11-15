@@ -1,5 +1,4 @@
 import edjsHTML from "editorjs-html";
-import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import xss from "xss";
