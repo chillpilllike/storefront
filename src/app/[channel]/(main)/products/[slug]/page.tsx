@@ -13,6 +13,7 @@ import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
+import { ProductsPerPage } from "@/app/related";
 
 export async function generateMetadata(
 	{
