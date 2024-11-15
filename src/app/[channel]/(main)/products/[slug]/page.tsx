@@ -9,7 +9,7 @@ import { invariant } from 'ts-invariant';
 import { type WithContext, type Product } from 'schema-dts';
 import { AddButton } from './AddButton';
 import { VariantSelector } from '@/ui/components/VariantSelector';
-import { ProductImageGallery } from '@/app/[channel]/(main)/products/[slug]/ProductImageGallery'; // Adjust the import path if necessary
+import { ProductImageGallery } from '@/app/[channel]/(main)/products/[slug]/ProductImageGallery'; // Ensure correct import path
 import { executeGraphQL } from '@/lib/graphql';
 import { formatMoney, formatMoneyRange } from '@/lib/utils';
 import {
@@ -105,8 +105,22 @@ export default async function Page({
     notFound();
   }
 
-  const images = product.images || [];
-  const firstImage = product.thumbnail;
+  // **Map `images` to conform to the `Image` interface**
+  const images: Image[] = (product.images || []).map((img: any) => ({
+    id: img.id,
+    url: img.url,
+    alt: img.alt ?? 'Product Image', // Use '??' to handle null values
+  }));
+
+  // **Map `thumbnail` to conform to the `Image` interface or set to undefined**
+  const firstImage: Image | undefined = product.thumbnail
+    ? {
+        id: product.thumbnail.id,
+        url: product.thumbnail.url,
+        alt: product.thumbnail.alt ?? 'Product Image', // Use '??' to handle null values
+      }
+    : undefined;
+
   const description = product?.description ? parser.parse(JSON.parse(product?.description)) : null;
 
   const variants = product.variants;
