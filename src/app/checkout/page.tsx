@@ -1,4 +1,4 @@
-timport { invariant } from "ts-invariant";
+import { invariant } from "ts-invariant";
 import { RootWrapper } from "./pageWrapper";
 
 export const metadata = {
