@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Script from "next/script"; // Import Script for external scripts
 import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { ChannelSelect } from "./ChannelSelect";
