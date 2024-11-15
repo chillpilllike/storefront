@@ -1,3 +1,5 @@
+// src/app/[channel]/(main)/products/[slug]/page.tsx
+
 // Import Statements
 import edjsHTML from "editorjs-html";
 import { revalidatePath } from "next/cache";
@@ -20,7 +22,7 @@ import {
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 import { ProductsPerPage } from "@/app/related";
-import { ProductList } from "@/ui/components/ProductList"; // Ensure this import is necessary
+import { ProductList } from "@/ui/components/ProductList";
 
 // New Imports for Image Gallery
 import Image from "next/image";
@@ -29,6 +31,141 @@ import { ProductImagePlaceholder } from "./product-image-placeholder";
 
 // Initialize Editor.js HTML Parser
 const parser = edjsHTML();
+
+// Define TypeScript Types
+interface ImageType {
+    url: string;
+    alt?: string | null;
+}
+
+interface Product {
+    __typename?: "Product";
+    id: string;
+    name: string;
+    slug: string;
+    description?: string | null;
+    seoTitle?: string | null;
+    seoDescription?: string | null;
+    thumbnail?: {
+        url: string;
+        alt?: string | null;
+    } | null;
+    images?: ImageType[] | null;
+    category?: {
+        // Define necessary fields if used
+    } | null;
+    variants?: Variant[] | null;
+    pricing?: {
+        priceRange?: {
+            start?: {
+                gross?: {
+                    amount: number;
+                    currency: string;
+                };
+            };
+            stop?: {
+                gross?: {
+                    amount: number;
+                    currency: string;
+                };
+            };
+        };
+    } | null;
+}
+
+interface Variant {
+    id: string;
+    name: string;
+    pricing?: {
+        price?: {
+            gross?: {
+                amount: number;
+                currency: string;
+            };
+        };
+    };
+    quantityAvailable: number;
+}
+
+interface ProductDetailsResponse {
+    product?: Product | null;
+}
+
+// Define the GraphQL Query (ProductDetailsDocument)
+const ProductDetailsDocument = `
+    query ProductDetails($slug: String!, $channel: String!) {
+        product(slug: $slug, channel: $channel) {
+            id
+            name
+            seoTitle
+            seoDescription
+            description
+            thumbnail {
+                url
+                alt
+            }
+            images {          # Ensure this field is included
+                url
+                alt
+            }
+            variants {
+                id
+                name
+                pricing {
+                    price {
+                        gross {
+                            amount
+                            currency
+                        }
+                    }
+                }
+                quantityAvailable
+            }
+            pricing {
+                priceRange {
+                    start {
+                        gross {
+                            amount
+                            currency
+                        }
+                    }
+                    stop {
+                        gross {
+                            amount
+                            currency
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
+
+// Define the ProductListPaginatedDocument (Assuming it's already defined similarly)
+const ProductListPaginatedDocument = `
+    query ProductListPaginated($first: Int!, $after: String, $channel: String!) {
+        products(first: $first, after: $after, channel: $channel) {
+            edges {
+                node {
+                    id
+                    name
+                    slug
+                    description
+                    seoTitle
+                    seoDescription
+                    thumbnail {
+                        url
+                        alt
+                    }
+                }
+            }
+            pageInfo {
+                endCursor
+                hasNextPage
+            }
+        }
+    }
+`;
 
 // Metadata Generation Function
 export async function generateMetadata(
@@ -41,13 +178,12 @@ export async function generateMetadata(
     },
     parent: ResolvingMetadata,
 ): Promise<Metadata> {
-    const { product } = await executeGraphQL(ProductDetailsDocument, {
-        variables: {
-            slug: decodeURIComponent(params.slug),
-            channel: params.channel,
-        },
-        revalidate: 60,
+    const response = await executeGraphQL<ProductDetailsResponse>(ProductDetailsDocument, {
+        slug: decodeURIComponent(params.slug),
+        channel: params.channel,
     });
+
+    const { product } = response;
 
     if (!product) {
         notFound();
@@ -80,14 +216,50 @@ export async function generateMetadata(
 
 // Static Parameters Generation Function
 export async function generateStaticParams({ params }: { params: { channel: string } }) {
-    const { products } = await executeGraphQL(ProductListDocument, {
-        revalidate: 60,
-        variables: { first: 20, channel: params.channel },
-        withAuth: false,
+    const response = await executeGraphQL<ProductListResponse>(ProductListDocument, {
+        first: 20,
+        channel: params.channel,
     });
+
+    const { products } = response;
 
     const paths = products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
     return paths;
+}
+
+// Define TypeScript Type for ProductListResponse
+interface ProductListResponse {
+    products?: {
+        edges: Array<{
+            node: {
+                slug: string;
+            };
+        }>;
+    } | null;
+}
+
+// Define TypeScript Type for ProductListPaginatedResponse
+interface ProductListPaginatedResponse {
+    products?: {
+        edges: Array<{
+            node: {
+                id: string;
+                name: string;
+                slug: string;
+                description?: string | null;
+                seoTitle?: string | null;
+                seoDescription?: string | null;
+                thumbnail?: {
+                    url: string;
+                    alt?: string | null;
+                } | null;
+            };
+        }>;
+        pageInfo: {
+            endCursor: string;
+            hasNextPage: boolean;
+        };
+    } | null;
 }
 
 // Main Page Component
@@ -99,13 +271,12 @@ export default async function Page({
     searchParams: { variant?: string; cursor?: string | string[] };
 }) {
     // Fetch Product Details
-    const { product } = await executeGraphQL(ProductDetailsDocument, {
-        variables: {
-            slug: decodeURIComponent(params.slug),
-            channel: params.channel,
-        },
-        revalidate: 60,
+    const response = await executeGraphQL<ProductDetailsResponse>(ProductDetailsDocument, {
+        slug: decodeURIComponent(params.slug),
+        channel: params.channel,
     });
+
+    const { product } = response;
 
     if (!product) {
         notFound();
@@ -140,10 +311,9 @@ export default async function Page({
 
         // TODO: error handling
         await executeGraphQL(CheckoutAddLineDocument, {
-            variables: {
-                id: checkout.id,
-                productVariantId: decodeURIComponent(selectedVariantID),
-            },
+            id: checkout.id,
+            productVariantId: decodeURIComponent(selectedVariantID),
+        }, {
             cache: "no-cache",
         });
 
@@ -200,14 +370,13 @@ export default async function Page({
     // Fetch Paginated Products
     const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
 
-    const { products: paginatedProducts } = await executeGraphQL(ProductListPaginatedDocument, {
-        variables: {
-            first: ProductsPerPage,
-            after: cursor,
-            channel: params.channel,
-        },
-        revalidate: 60,
+    const paginatedResponse = await executeGraphQL<ProductListPaginatedResponse>(ProductListPaginatedDocument, {
+        first: ProductsPerPage,
+        after: cursor,
+        channel: params.channel,
     });
+
+    const { products: paginatedProducts } = paginatedResponse;
 
     if (!paginatedProducts) {
         notFound();
