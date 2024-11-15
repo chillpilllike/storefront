@@ -4,7 +4,7 @@
 
 import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Thumbs, A11y } from 'swiper';
+import { Navigation, Thumbs, A11y } from 'swiper/modules'; // Corrected import path
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
@@ -22,7 +22,7 @@ interface ProductImageGalleryProps {
 }
 
 export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images, thumbnail }) => {
-  const [thumbsSwiper, setThumbsSwiper] = useState<null | any>(null); // Using 'any' for simplicity
+  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null); // Using 'any' for simplicity
 
   // Combine thumbnail and images if thumbnail exists and not already in images
   const allImages = thumbnail && !images.some(img => img.id === thumbnail.id) ? [thumbnail, ...images] : images;
