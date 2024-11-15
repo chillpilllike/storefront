@@ -9,7 +9,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import { ProductImageWrapper } from '@/ui/atoms/ProductImageWrapper';
-import { GalleryImage } from '@/types'; // If using a separate types file
+import { GalleryImage } from './GalleryImage'; // If using a separate types file
 
 interface GalleryImage {
   id: string;
