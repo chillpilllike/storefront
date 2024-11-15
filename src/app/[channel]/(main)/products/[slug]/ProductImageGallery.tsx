@@ -1,17 +1,16 @@
-// components/ProductImageGallery.tsx
+// src/app/[channel]/(main)/products/[slug]/ProductImageGallery.tsx
 
 'use client';
 
 import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import SwiperCore, { Navigation, Thumbs, A11y } from 'swiper';
+import { Navigation, Thumbs, A11y, Lazy } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import 'swiper/css/a11y';
+import 'swiper/css/lazy';
 import { ProductImageWrapper } from '@/ui/atoms/ProductImageWrapper';
-
-SwiperCore.use([Navigation, Thumbs, A11y]);
 
 interface Image {
   id: string;
@@ -25,7 +24,7 @@ interface ProductImageGalleryProps {
 }
 
 export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images, thumbnail }) => {
-  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
+  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
 
   // Combine thumbnail and images if thumbnail exists and not already in images
   const allImages = thumbnail && !images.some(img => img.id === thumbnail.id) ? [thumbnail, ...images] : images;
@@ -33,6 +32,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
   return (
     <div className="product-gallery">
       <Swiper
+        modules={[Navigation, Thumbs, A11y, Lazy]}
         spaceBetween={10}
         navigation
         thumbs={{ swiper: thumbsSwiper }}
@@ -42,6 +42,9 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
           nextSlideMessage: 'Next slide',
           slideLabelMessage: '{{index}} / {{slidesLength}}',
         }}
+        lazy={true}
+        preloadImages={false}
+        watchSlidesProgress
       >
         {allImages.map((image) => (
           <SwiperSlide key={image.id}>
@@ -58,6 +61,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
 
       {allImages.length > 1 && (
         <Swiper
+          modules={[Navigation, Thumbs, A11y]}
           onSwiper={setThumbsSwiper}
           spaceBetween={10}
           slidesPerView={4}
