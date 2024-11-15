@@ -1,9 +1,4 @@
-# src/gql/graphql.ts
-
-import { gql } from '@apollo/client';
-
-export const ProductDetailsDocument = gql`
-  query ProductDetails($slug: String!, $channel: String!) {
+ query ProductDetails($slug: String!, $channel: String!) {
     product(slug: $slug, channel: $channel) {
       id
       name
