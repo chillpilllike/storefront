@@ -17,7 +17,7 @@ import {
     CheckoutAddLineDocument,
     ProductDetailsDocument,
     ProductListDocument,
-    ProductListPaginatedDocument,
+    ProductListPaginatedDocument, // Imported once from "@/gql/graphql"
 } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
@@ -36,6 +36,20 @@ const parser = edjsHTML();
 interface ImageType {
     url: string;
     alt?: string | null;
+}
+
+interface Variant {
+    id: string;
+    name: string;
+    pricing?: {
+        price?: {
+            gross?: {
+                amount: number;
+                currency: string;
+            };
+        };
+    };
+    quantityAvailable: number;
 }
 
 interface Product {
@@ -73,99 +87,42 @@ interface Product {
     } | null;
 }
 
-interface Variant {
-    id: string;
-    name: string;
-    pricing?: {
-        price?: {
-            gross?: {
-                amount: number;
-                currency: string;
-            };
-        };
-    };
-    quantityAvailable: number;
-}
-
 interface ProductDetailsResponse {
     product?: Product | null;
 }
 
-// Define the GraphQL Query (ProductDetailsDocument)
-const ProductDetailsDocument = `
-    query ProductDetails($slug: String!, $channel: String!) {
-        product(slug: $slug, channel: $channel) {
-            id
-            name
-            seoTitle
-            seoDescription
-            description
-            thumbnail {
-                url
-                alt
-            }
-            images {          # Ensure this field is included
-                url
-                alt
-            }
-            variants {
-                id
-                name
-                pricing {
-                    price {
-                        gross {
-                            amount
-                            currency
-                        }
-                    }
-                }
-                quantityAvailable
-            }
-            pricing {
-                priceRange {
-                    start {
-                        gross {
-                            amount
-                            currency
-                        }
-                    }
-                    stop {
-                        gross {
-                            amount
-                            currency
-                        }
-                    }
-                }
-            }
-        }
-    }
-`;
+interface ProductListResponse {
+    products?: {
+        edges: Array<{
+            node: {
+                slug: string;
+            };
+        }>;
+    } | null;
+}
 
-// Define the ProductListPaginatedDocument (Assuming it's already defined similarly)
-const ProductListPaginatedDocument = `
-    query ProductListPaginated($first: Int!, $after: String, $channel: String!) {
-        products(first: $first, after: $after, channel: $channel) {
-            edges {
-                node {
-                    id
-                    name
-                    slug
-                    description
-                    seoTitle
-                    seoDescription
-                    thumbnail {
-                        url
-                        alt
-                    }
-                }
-            }
-            pageInfo {
-                endCursor
-                hasNextPage
-            }
-        }
-    }
-`;
+interface ProductListPaginatedResponse {
+    products?: {
+        edges: Array<{
+            node: {
+                id: string;
+                name: string;
+                slug: string;
+                description?: string | null;
+                seoTitle?: string | null;
+                seoDescription?: string | null;
+                thumbnail?: {
+                    url: string;
+                    alt?: string | null;
+                } | null;
+            };
+        }>;
+        pageInfo: {
+            endCursor: string;
+            hasNextPage: boolean;
+        };
+    } | null;
+}
 
 // Metadata Generation Function
 export async function generateMetadata(
@@ -225,41 +182,6 @@ export async function generateStaticParams({ params }: { params: { channel: stri
 
     const paths = products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
     return paths;
-}
-
-// Define TypeScript Type for ProductListResponse
-interface ProductListResponse {
-    products?: {
-        edges: Array<{
-            node: {
-                slug: string;
-            };
-        }>;
-    } | null;
-}
-
-// Define TypeScript Type for ProductListPaginatedResponse
-interface ProductListPaginatedResponse {
-    products?: {
-        edges: Array<{
-            node: {
-                id: string;
-                name: string;
-                slug: string;
-                description?: string | null;
-                seoTitle?: string | null;
-                seoDescription?: string | null;
-                thumbnail?: {
-                    url: string;
-                    alt?: string | null;
-                } | null;
-            };
-        }>;
-        pageInfo: {
-            endCursor: string;
-            hasNextPage: boolean;
-        };
-    } | null;
 }
 
 // Main Page Component
