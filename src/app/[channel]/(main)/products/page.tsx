@@ -7,7 +7,7 @@ import { ProductsPerPage } from "@/app/config";
 
 export const metadata = {
 	title: "Products · Secretgreen.com.au",
-	description: "browse our collection of unique products.",
+	description: "Browse our collection of unique products.",
 };
 
 export default async function Page({
