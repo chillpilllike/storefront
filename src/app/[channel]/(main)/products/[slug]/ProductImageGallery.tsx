@@ -4,7 +4,7 @@
 
 import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Thumbs, A11y } from 'swiper/modules'; // Ensure correct import path based on Swiper version
+import { Navigation, Thumbs, A11y } from 'swiper/modules'; // Correct import path for Swiper v10+
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
@@ -13,7 +13,7 @@ import { ProductImageWrapper } from '@/ui/atoms/ProductImageWrapper';
 interface Image {
   id: string;
   url: string;
-  alt?: string | null; // Allowing null values
+  alt?: string | null; // Allows 'alt' to be 'string', 'null', or 'undefined'
 }
 
 interface ProductImageGalleryProps {
@@ -22,7 +22,7 @@ interface ProductImageGalleryProps {
 }
 
 export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images, thumbnail }) => {
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null); // Using 'any' for simplicity
+  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null); // Consider using proper typing
 
   // Combine thumbnail and images if thumbnail exists and not already in images
   const allImages = thumbnail && !images.some(img => img.id === thumbnail.id) ? [thumbnail, ...images] : images;
@@ -47,7 +47,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
           <SwiperSlide key={image.id}>
             <ProductImageWrapper
               priority={false}
-              alt={image.alt ?? 'Product Image'} // Ensuring alt is a string
+              alt={image.alt ?? 'Product Image'} // Ensures 'alt' is a string
               width={1024}
               height={1024}
               src={image.url}
@@ -74,7 +74,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
             <SwiperSlide key={`thumb-${image.id}`}>
               <ProductImageWrapper
                 priority={false}
-                alt={image.alt ?? 'Product Thumbnail'} // Ensuring alt is a string
+                alt={image.alt ?? 'Product Thumbnail'} // Ensures 'alt' is a string
                 width={200}
                 height={200}
                 src={image.url}
