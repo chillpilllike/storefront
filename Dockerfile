@@ -13,7 +13,7 @@ RUN apk add --no-cache git
 RUN npm install -g corepack@0.24.1 && corepack enable
 
 # Install dependencies using pnpm
-RUN pnpm i --frozen-lockfile
+RUN pnpm i
 
 # Build the application
 RUN pnpm run build
