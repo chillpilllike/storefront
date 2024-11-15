@@ -1,5 +1,3 @@
-// Your existing page file, e.g., /app/products/[slug]/page.tsx
-
 import edjsHTML from "editorjs-html";
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
@@ -12,263 +10,218 @@ import { VariantSelector } from "@/ui/components/VariantSelector";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import { executeGraphQL } from "@/lib/graphql";
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
-import {
-  CheckoutAddLineDocument,
-  ProductDetailsDocument,
-  ProductListDocument,
-  ProductListPaginatedDocument,
-} from "@/gql/graphql";
+import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
-import { ProductsPerPage } from "@/app/related";
-import { ProductList } from "@/ui/components/ProductList"; // Ensure this component exists
 
 export async function generateMetadata(
-  {
-    params,
-    searchParams,
-  }: {
-    params: { slug: string; channel: string };
-    searchParams: { variant?: string };
-  },
-  parent: ResolvingMetadata,
+	{
+		params,
+		searchParams,
+	}: {
+		params: { slug: string; channel: string };
+		searchParams: { variant?: string };
+	},
+	parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const { product } = await executeGraphQL(ProductDetailsDocument, {
-    variables: {
-      slug: decodeURIComponent(params.slug),
-      channel: params.channel,
-    },
-    revalidate: 60,
-  });
+	const { product } = await executeGraphQL(ProductDetailsDocument, {
+		variables: {
+			slug: decodeURIComponent(params.slug),
+			channel: params.channel,
+		},
+		revalidate: 60,
+	});
 
-  if (!product) {
-    notFound();
-  }
+	if (!product) {
+		notFound();
+	}
 
-  const productName = product.seoTitle || product.name;
-  const variantName = product.variants?.find(({ id }) => id === searchParams.variant)?.name;
-  const productNameAndVariant = variantName ? `${productName} - ${variantName}` : productName;
+	const productName = product.seoTitle || product.name;
+	const variantName = product.variants?.find(({ id }) => id === searchParams.variant)?.name;
+	const productNameAndVariant = variantName ? `${productName} - ${variantName}` : productName;
 
-  return {
-    title: `${product.name} | ${product.seoTitle || (await parent).title?.absolute}`,
-    description: product.seoDescription || productNameAndVariant,
-    alternates: {
-      canonical: process.env.NEXT_PUBLIC_STOREFRONT_URL
-        ? process.env.NEXT_PUBLIC_STOREFRONT_URL + `/products/${encodeURIComponent(params.slug)}`
-        : undefined,
-    },
-    openGraph: product.thumbnail
-      ? {
-          images: [
-            {
-              url: product.thumbnail.url,
-              alt: product.name,
-            },
-          ],
-        }
-      : null,
-  };
+	return {
+		title: `${product.name} | ${product.seoTitle || (await parent).title?.absolute}`,
+		description: product.seoDescription || productNameAndVariant,
+		alternates: {
+			canonical: process.env.NEXT_PUBLIC_STOREFRONT_URL
+				? process.env.NEXT_PUBLIC_STOREFRONT_URL + `/products/${encodeURIComponent(params.slug)}`
+				: undefined,
+		},
+		openGraph: product.thumbnail
+			? {
+					images: [
+						{
+							url: product.thumbnail.url,
+							alt: product.name,
+						},
+					],
+			  }
+			: null,
+	};
 }
 
 export async function generateStaticParams({ params }: { params: { channel: string } }) {
-  const { products } = await executeGraphQL(ProductListDocument, {
-    revalidate: 60,
-    variables: { first: 20, channel: params.channel },
-    withAuth: false,
-  });
+	const { products } = await executeGraphQL(ProductListDocument, {
+		revalidate: 60,
+		variables: { first: 20, channel: params.channel },
+		withAuth: false,
+	});
 
-  const paths = products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
-  return paths;
+	const paths = products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
+	return paths;
 }
 
 const parser = edjsHTML();
 
 export default async function Page({
-  params,
-  searchParams,
+	params,
+	searchParams,
 }: {
-  params: { slug: string; channel: string };
-  searchParams: { variant?: string; cursor?: string | string[] };
+	params: { slug: string; channel: string };
+	searchParams: { variant?: string };
 }) {
-  // Fetch product details
-  const { product } = await executeGraphQL(ProductDetailsDocument, {
-    variables: {
-      slug: decodeURIComponent(params.slug),
-      channel: params.channel,
-    },
-    revalidate: 60,
-  });
+	const { product } = await executeGraphQL(ProductDetailsDocument, {
+		variables: {
+			slug: decodeURIComponent(params.slug),
+			channel: params.channel,
+		},
+		revalidate: 60,
+	});
 
-  if (!product) {
-    notFound();
-  }
+	if (!product) {
+		notFound();
+	}
 
-  const firstImage = product.thumbnail;
-  const description = product?.description ? parser.parse(JSON.parse(product?.description)) : null;
+	const firstImage = product.thumbnail;
+	const description = product?.description ? parser.parse(JSON.parse(product?.description)) : null;
 
-  const variants = product.variants;
-  const selectedVariantID = searchParams.variant;
-  const selectedVariant = variants?.find(({ id }) => id === selectedVariantID);
+	const variants = product.variants;
+	const selectedVariantID = searchParams.variant;
+	const selectedVariant = variants?.find(({ id }) => id === selectedVariantID);
 
-  async function addItem() {
-    "use server";
+	async function addItem() {
+		"use server";
 
-    const checkout = await Checkout.findOrCreate({
-      checkoutId: Checkout.getIdFromCookies(params.channel),
-      channel: params.channel,
-    });
-    invariant(checkout, "This should never happen");
+		const checkout = await Checkout.findOrCreate({
+			checkoutId: Checkout.getIdFromCookies(params.channel),
+			channel: params.channel,
+		});
+		invariant(checkout, "This should never happen");
 
-    Checkout.saveIdToCookie(params.channel, checkout.id);
+		Checkout.saveIdToCookie(params.channel, checkout.id);
 
-    if (!selectedVariantID) {
-      return;
-    }
+		if (!selectedVariantID) {
+			return;
+		}
 
-    // TODO: error handling
-    await executeGraphQL(CheckoutAddLineDocument, {
-      variables: {
-        id: checkout.id,
-        productVariantId: decodeURIComponent(selectedVariantID),
-      },
-      cache: "no-cache",
-    });
+		// TODO: error handling
+		await executeGraphQL(CheckoutAddLineDocument, {
+			variables: {
+				id: checkout.id,
+				productVariantId: decodeURIComponent(selectedVariantID),
+			},
+			cache: "no-cache",
+		});
 
-    revalidatePath("/cart");
-  }
+		revalidatePath("/cart");
+	}
 
-  const isAvailable = variants?.some((variant) => variant.quantityAvailable) ?? false;
+	const isAvailable = variants?.some((variant) => variant.quantityAvailable) ?? false;
 
-  const price = selectedVariant?.pricing?.price?.gross
-    ? formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
-    : isAvailable
-      ? formatMoneyRange({
-          start: product?.pricing?.priceRange?.start?.gross,
-          stop: product?.pricing?.priceRange?.stop?.gross,
-        })
-      : "";
+	const price = selectedVariant?.pricing?.price?.gross
+		? formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
+		: isAvailable
+		  ? formatMoneyRange({
+					start: product?.pricing?.priceRange?.start?.gross,
+					stop: product?.pricing?.priceRange?.stop?.gross,
+		    })
+		  : "";
 
-  const productJsonLd: WithContext<Product> = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    image: product.thumbnail?.url,
-    ...(selectedVariant
-      ? {
-          name: `${product.name} - ${selectedVariant.name}`,
-          description: product.seoDescription || `${product.name} - ${selectedVariant.name}`,
-          offers: {
-            "@type": "Offer",
-            availability: selectedVariant.quantityAvailable
-              ? "https://schema.org/InStock"
-              : "https://schema.org/OutOfStock",
-            priceCurrency: selectedVariant.pricing?.price?.gross.currency,
-            price: selectedVariant.pricing?.price?.gross.amount,
-          },
-        }
-      : {
-          name: product.name,
+	const productJsonLd: WithContext<Product> = {
+		"@context": "https://schema.org",
+		"@type": "Product",
+		image: product.thumbnail?.url,
+		...(selectedVariant
+			? {
+					name: `${product.name} - ${selectedVariant.name}`,
+					description: product.seoDescription || `${product.name} - ${selectedVariant.name}`,
+					offers: {
+						"@type": "Offer",
+						availability: selectedVariant.quantityAvailable
+							? "https://schema.org/InStock"
+							: "https://schema.org/OutOfStock",
+						priceCurrency: selectedVariant.pricing?.price?.gross.currency,
+						price: selectedVariant.pricing?.price?.gross.amount,
+					},
+			  }
+			: {
+					name: product.name,
 
-          description: product.seoDescription || product.name,
-          offers: {
-            "@type": "AggregateOffer",
-            availability: product.variants?.some((variant) => variant.quantityAvailable)
-              ? "https://schema.org/InStock"
-              : "https://schema.org/OutOfStock",
-            priceCurrency: product.pricing?.priceRange?.start?.gross.currency,
-            lowPrice: product.pricing?.priceRange?.start?.gross.amount,
-            highPrice: product.pricing?.priceRange?.stop?.gross.amount,
-          },
-        }),
-  };
+					description: product.seoDescription || product.name,
+					offers: {
+						"@type": "AggregateOffer",
+						availability: product.variants?.some((variant) => variant.quantityAvailable)
+							? "https://schema.org/InStock"
+							: "https://schema.org/OutOfStock",
+						priceCurrency: product.pricing?.priceRange?.start?.gross.currency,
+						lowPrice: product.pricing?.priceRange?.start?.gross.amount,
+						highPrice: product.pricing?.priceRange?.stop?.gross.amount,
+					},
+			  }),
+	};
 
-  // Fetch paginated products
-  const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
+	return (
+		<section className="mx-auto grid max-w-7xl p-8">
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(productJsonLd),
+				}}
+			/>
+			<form className="grid gap-2 sm:grid-cols-2 lg:grid-cols-8" action={addItem}>
+				<div className="md:col-span-1 lg:col-span-5">
+					{firstImage && (
+						<ProductImageWrapper
+							priority={true}
+							alt={firstImage.alt ?? ""}
+							width={1024}
+							height={1024}
+							src={firstImage.url}
+						/>
+					)}
+				</div>
+				<div className="flex flex-col pt-6 sm:col-span-1 sm:px-6 sm:pt-0 lg:col-span-3 lg:pt-16">
+					<div>
+						<h1 className="mb-4 flex-auto text-3xl font-medium tracking-tight text-neutral-900">
+							{product?.name}
+						</h1>
+						<p className="mb-8 text-sm " data-testid="ProductElement_Price">
+							{price}
+						</p>
 
-  const { products } = await executeGraphQL(ProductListPaginatedDocument, {
-    variables: {
-      first: ProductsPerPage,
-      after: cursor,
-      channel: params.channel,
-    },
-    revalidate: 60,
-  });
-
-  if (!products) {
-    notFound();
-  }
-
-  const newSearchParams = new URLSearchParams({
-    ...(products.pageInfo.endCursor && { cursor: products.pageInfo.endCursor }),
-  });
-
-  return (
-    <section className="mx-auto grid max-w-7xl p-8">
-      {/* Product Schema Markup */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(productJsonLd),
-        }}
-      />
-
-      {/* Product Details Form */}
-      <form className="grid gap-2 sm:grid-cols-2 lg:grid-cols-8" action={addItem}>
-        <div className="md:col-span-1 lg:col-span-5">
-          {firstImage && (
-            <ProductImageWrapper
-              priority={true}
-              alt={firstImage.alt ?? ""}
-              width={1024}
-              height={1024}
-              src={firstImage.url}
-            />
-          )}
-        </div>
-        <div className="flex flex-col pt-6 sm:col-span-1 sm:px-6 sm:pt-0 lg:col-span-3 lg:pt-16">
-          <div>
-            <h1 className="mb-4 flex-auto text-3xl font-medium tracking-tight text-neutral-900">
-              {product?.name}
-            </h1>
-            <p className="mb-8 text-sm " data-testid="ProductElement_Price">
-              {price}
-            </p>
-
-            {variants && (
-              <VariantSelector
-                selectedVariant={selectedVariant}
-                variants={variants}
-                product={product}
-                channel={params.channel}
-              />
-            )}
-            <AvailabilityMessage isAvailable={isAvailable} />
-            <div className="mt-8">
-              <AddButton disabled={!selectedVariantID || !selectedVariant?.quantityAvailable} />
-            </div>
-            {description && (
-              <div className="mt-8 space-y-6 text-sm text-neutral-500">
-                {description.map((content, index) => (
-                  <div key={index} dangerouslySetInnerHTML={{ __html: xss(content) }} />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </form>
-
-      {/* Paginated Product List */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-semibold mb-6">Related Products</h2>
-        <ProductList products={products.edges.map(edge => edge.node)} />
-        {products.pageInfo.hasNextPage && (
-          <a
-            href={`?cursor=${products.pageInfo.endCursor}`}
-            className="mt-4 inline-block text-blue-500 hover:underline"
-          >
-            Load More
-          </a>
-        )}
-      </div>
-    </section>
-  );
+						{variants && (
+							<VariantSelector
+								selectedVariant={selectedVariant}
+								variants={variants}
+								product={product}
+								channel={params.channel}
+							/>
+						)}
+						<AvailabilityMessage isAvailable={isAvailable} />
+						<div className="mt-8">
+							<AddButton disabled={!selectedVariantID || !selectedVariant?.quantityAvailable} />
+						</div>
+						{description && (
+							<div className="mt-8 space-y-6 text-sm text-neutral-500">
+								{description.map((content) => (
+									<div key={content} dangerouslySetInnerHTML={{ __html: xss(content) }} />
+								))}
+							</div>
+						)}
+					</div>
+				</div>
+			</form>
+		</section>
+	);
 }
