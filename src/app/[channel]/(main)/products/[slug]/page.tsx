@@ -24,7 +24,7 @@ import * as Checkout from '@/lib/checkout';
 import { AvailabilityMessage } from '@/ui/components/AvailabilityMessage';
 import { ProductsPerPage } from '@/app/related';
 import { ProductList } from '@/ui/components/ProductList';
-import { GalleryImage } from '@/types';
+import { GalleryImage } from './types';
 
 const parser = edjsHTML();
 
