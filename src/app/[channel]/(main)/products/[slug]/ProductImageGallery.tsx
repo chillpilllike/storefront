@@ -10,12 +10,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import { ProductImageWrapper } from '@/ui/atoms/ProductImageWrapper';
 import { GalleryImage } from './GalleryImage'; // If using a separate types file
-
-interface GalleryImage {
-  id: string;
-  url: string;
-  alt?: string | null;
-}
+import SwiperCore from 'swiper';
 
 interface ProductImageGalleryProps {
   images: GalleryImage[];
@@ -23,7 +18,7 @@ interface ProductImageGalleryProps {
 }
 
 export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images, thumbnail }) => {
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null); // Consider using proper typing
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
 
   // Combine thumbnail and images if thumbnail exists and not already in images
   const allImages = thumbnail && !images.some(img => img.id === thumbnail.id) ? [thumbnail, ...images] : images;
