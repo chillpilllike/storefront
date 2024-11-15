@@ -4,7 +4,7 @@ FROM node:20-alpine
 # Set the working directory in the container
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+COPY . .
 
 # Install git to clone the repository
 RUN apk add --no-cache git
