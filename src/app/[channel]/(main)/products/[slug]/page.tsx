@@ -81,7 +81,7 @@ export default async function Page({
     searchParams,
 }: {
     params: { slug: string; channel: string };
-    searchParams: { variant?: string };
+    searchParams: { variant?: string; cursor?: string | string[] };
 }) {
     // Fetch Product Details
     const { product } = await executeGraphQL(ProductDetailsDocument, {
