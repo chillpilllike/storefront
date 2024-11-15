@@ -1,4 +1,4 @@
-// app/products/[slug]/page.tsx
+// src/app/[channel]/(main)/products/[slug]/page.tsx
 
 import edjsHTML from 'editorjs-html';
 import { revalidatePath } from 'next/cache';
@@ -9,7 +9,7 @@ import { invariant } from 'ts-invariant';
 import { type WithContext, type Product } from 'schema-dts';
 import { AddButton } from './AddButton';
 import { VariantSelector } from '@/ui/components/VariantSelector';
-import { ProductImageGallery } from './ProductImageGallery'; // Updated import
+import { ProductImageGallery } from '@/app/[channel]/(main)/products/[slug]/ProductImageGallery'; // Adjust the import path if necessary
 import { executeGraphQL } from '@/lib/graphql';
 import { formatMoney, formatMoneyRange } from '@/lib/utils';
 import {
