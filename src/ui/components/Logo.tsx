@@ -1,9 +1,9 @@
-"use client";
+etgre"use client";
 
 import { usePathname } from "next/navigation";
 import { LinkWithChannel } from "../atoms/LinkWithChannel";
 
-const companyName = "ACME";
+const companyName = "Secertgreen";
 
 export const Logo = () => {
 	const pathname = usePathname();
