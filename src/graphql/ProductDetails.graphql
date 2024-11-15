@@ -4,12 +4,10 @@ query ProductDetails($slug: String!, $channel: String!) {
     name
     description
     images {
-      id
       url
       alt
     }
     thumbnail {
-      id
       url
       alt
     }
