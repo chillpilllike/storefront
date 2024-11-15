@@ -93,8 +93,7 @@ export default async function Page({
   }
 
   // Map `images` to conform to the `GalleryImage` interface
-  const images: GalleryImage[] = (product.images || []).map((img: any) => ({
-    id: img.id,
+  const images: GalleryImage[] = (product.images || []).map((img: any, index: number) => ({
     url: img.url,
     alt: img.alt ?? 'Product Image',
   }));
@@ -102,7 +101,6 @@ export default async function Page({
   // Map `thumbnail` to conform to the `GalleryImage` interface or set to undefined
   const firstImage: GalleryImage | undefined = product.thumbnail
     ? {
-        id: product.thumbnail.id,
         url: product.thumbnail.url,
         alt: product.thumbnail.alt ?? 'Product Image',
       }
