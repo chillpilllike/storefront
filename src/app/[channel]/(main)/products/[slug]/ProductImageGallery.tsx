@@ -4,24 +4,37 @@
 
 import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Thumbs, A11y } from 'swiper/modules'; // Correct import path for Swiper v10+
+import { Navigation, Thumbs, A11y } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import { ProductImageWrapper } from '@/ui/atoms/ProductImageWrapper';
-import { GalleryImage } from './GalleryImage'; // If using a separate types file
+import { GalleryImage } from './types';
 import SwiperCore from 'swiper';
 
+/**
+ * Props for the ProductImageGallery component.
+ */
 interface ProductImageGalleryProps {
   images: GalleryImage[];
   thumbnail?: GalleryImage;
 }
 
-export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images, thumbnail }) => {
+/**
+ * ProductImageGallery Component
+ * @param props - Contains images and an optional thumbnail.
+ * @returns JSX Element.
+ */
+export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
+  images,
+  thumbnail,
+}) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
 
-  // Combine thumbnail and images if thumbnail exists and not already in images
-  const allImages = thumbnail && !images.some(img => img.id === thumbnail.id) ? [thumbnail, ...images] : images;
+  // Combine thumbnail and images if thumbnail exists and is not already in images
+  const allImages = thumbnail && !images.some((img) => img.id === thumbnail.id)
+    ? [thumbnail, ...images]
+    : images;
 
   return (
     <div className="product-gallery">
@@ -39,11 +52,11 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
         }}
         watchSlidesProgress
       >
-        {allImages.map((image) => (
-          <SwiperSlide key={image.id}>
+        {allImages.map((image, index) => (
+          <SwiperSlide key={image.id || index}>
             <ProductImageWrapper
               priority={false}
-              alt={image.alt ?? 'Product Image'} // Ensures alt is a string
+              alt={image.alt ?? 'Product Image'}
               width={1024}
               height={1024}
               src={image.url}
@@ -66,11 +79,11 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
             slideLabelMessage: 'Thumbnail {{index}}',
           }}
         >
-          {allImages.map((image) => (
-            <SwiperSlide key={`thumb-${image.id}`}>
+          {allImages.map((image, index) => (
+            <SwiperSlide key={`thumb-${image.id || index}`}>
               <ProductImageWrapper
                 priority={false}
-                alt={image.alt ?? 'Product Thumbnail'} // Ensures alt is a string
+                alt={image.alt ?? 'Product Thumbnail'}
                 width={200}
                 height={200}
                 src={image.url}
