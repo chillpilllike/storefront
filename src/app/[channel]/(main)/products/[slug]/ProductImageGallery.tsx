@@ -32,7 +32,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
 
   // Combine thumbnail and images if thumbnail exists and is not already in images
-  const allImages = thumbnail && !images.some((img) => img.id === thumbnail.id)
+  const allImages = thumbnail && !images.some((img) => img.url === thumbnail.url)
     ? [thumbnail, ...images]
     : images;
 
@@ -53,7 +53,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
         watchSlidesProgress
       >
         {allImages.map((image, index) => (
-          <SwiperSlide key={image.id || index}>
+          <SwiperSlide key={`${image.url}-${index}`}>
             <ProductImageWrapper
               priority={false}
               alt={image.alt ?? 'Product Image'}
@@ -80,7 +80,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
           }}
         >
           {allImages.map((image, index) => (
-            <SwiperSlide key={`thumb-${image.id || index}`}>
+            <SwiperSlide key={`thumb-${image.url}-${index}`}>
               <ProductImageWrapper
                 priority={false}
                 alt={image.alt ?? 'Product Thumbnail'}
