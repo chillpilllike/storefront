@@ -9,16 +9,17 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import { ProductImageWrapper } from '@/ui/atoms/ProductImageWrapper';
+import { GalleryImage } from '@/types'; // If using a separate types file
 
-interface Image {
+interface GalleryImage {
   id: string;
   url: string;
-  alt?: string | null; // Allows 'alt' to be 'string', 'null', or 'undefined'
+  alt?: string | null;
 }
 
 interface ProductImageGalleryProps {
-  images: Image[];
-  thumbnail?: Image;
+  images: GalleryImage[];
+  thumbnail?: GalleryImage;
 }
 
 export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images, thumbnail }) => {
@@ -47,7 +48,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
           <SwiperSlide key={image.id}>
             <ProductImageWrapper
               priority={false}
-              alt={image.alt ?? 'Product Image'} // Ensures 'alt' is a string
+              alt={image.alt ?? 'Product Image'} // Ensures alt is a string
               width={1024}
               height={1024}
               src={image.url}
@@ -74,7 +75,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
             <SwiperSlide key={`thumb-${image.id}`}>
               <ProductImageWrapper
                 priority={false}
-                alt={image.alt ?? 'Product Thumbnail'} // Ensures 'alt' is a string
+                alt={image.alt ?? 'Product Thumbnail'} // Ensures alt is a string
                 width={200}
                 height={200}
                 src={image.url}
