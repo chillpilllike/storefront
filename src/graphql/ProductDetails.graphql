@@ -1,37 +1,54 @@
-query ProductDetails($slug: String!, $channel: String!) {
-	product(slug: $slug, channel: $channel) {
-		id
-		name
-		slug
-		description
-		seoTitle
-		seoDescription
-		thumbnail(size: 1024, format: WEBP) {
-			url
-			alt
-		}
-		category {
-			id
-			name
-		}
-		variants {
-			...VariantDetails
-		}
-		pricing {
-			priceRange {
-				start {
-					gross {
-						amount
-						currency
-					}
-				}
-				stop {
-					gross {
-						amount
-						currency
-					}
-				}
-			}
-		}
-	}
-}
+# src/gql/graphql.ts
+
+import { gql } from '@apollo/client';
+
+export const ProductDetailsDocument = gql`
+  query ProductDetails($slug: String!, $channel: String!) {
+    product(slug: $slug, channel: $channel) {
+      id
+      name
+      description
+      seoTitle
+      seoDescription
+      thumbnail {
+        url
+        alt
+      }
+      images {
+        id
+        url
+        alt
+      }
+      variants {
+        id
+        name
+        quantityAvailable
+        pricing {
+          price {
+            gross {
+              amount
+              currency
+            }
+          }
+        }
+      }
+      pricing {
+        priceRange {
+          start {
+            gross {
+              amount
+              currency
+            }
+          }
+          stop {
+            gross {
+              amount
+              currency
+            }
+          }
+        }
+      }
+      # ... any other necessary fields
+    }
+  }
+`;
