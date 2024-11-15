@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import xss from "xss";
 import { invariant } from "ts-invariant";
-import { type WithContext, type Product } from "schema-dts";
+import { type WithContext, type Product as SchemaProduct } from "schema-dts";
 import { AddButton } from "./AddButton";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 // import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
@@ -24,8 +24,8 @@ import { ProductList } from "@/ui/components/ProductList"; // Ensure this import
 
 // New Imports for Image Gallery
 import Image from "next/image";
-import { Carousel, CarouselContent, CarouselItem } from "./carousel";
-import { ProductImagePlaceholder } from "./product-image-placeholder";
+import { Carousel, CarouselContent, CarouselItem } from "@nimara/ui/components/carousel";
+import { ProductImagePlaceholder } from "@/components/product-image-placeholder";
 
 // Initialize Editor.js HTML Parser
 const parser = edjsHTML();
@@ -112,7 +112,7 @@ export default async function Page({
     }
 
     // Extract Images
-    const images = product.images || [];
+    const images = product.images || []; // Ensure 'images' is correctly fetched
 
     // Parse Description
     const description = product?.description ? parser.parse(JSON.parse(product?.description)) : null;
@@ -164,7 +164,7 @@ export default async function Page({
           : "";
 
     // JSON-LD for SEO
-    const productJsonLd: WithContext<Product> = {
+    const productJsonLd: WithContext<SchemaProduct> = {
         "@context": "https://schema.org",
         "@type": "Product",
         image: product.thumbnail?.url,
