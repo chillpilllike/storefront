@@ -4,7 +4,7 @@ FROM node:20-alpine
 # Set the working directory in the container
 WORKDIR /app
 
-COPY . .
+
 
 # Install git to clone the repository
 RUN apk add --no-cache git
@@ -14,6 +14,8 @@ RUN npm install -g corepack@0.24.1 && corepack enable
 
 # Install dependencies using pnpm
 RUN pnpm i
+
+COPY . .
 
 # Build the application
 RUN pnpm run build
