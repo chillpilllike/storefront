@@ -4,12 +4,11 @@
 
 import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Thumbs, A11y, Lazy } from 'swiper';
+import { Navigation, Thumbs, A11y } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
-import 'swiper/css/a11y';
-import 'swiper/css/lazy';
+// Removed: import 'swiper/css/lazy';
 import { ProductImageWrapper } from '@/ui/atoms/ProductImageWrapper';
 
 interface Image {
@@ -32,7 +31,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
   return (
     <div className="product-gallery">
       <Swiper
-        modules={[Navigation, Thumbs, A11y, Lazy]}
+        modules={[Navigation, Thumbs, A11y]}
         spaceBetween={10}
         navigation
         thumbs={{ swiper: thumbsSwiper }}
@@ -42,8 +41,8 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images
           nextSlideMessage: 'Next slide',
           slideLabelMessage: '{{index}} / {{slidesLength}}',
         }}
-        lazy={false}
-        preloadImages={false}
+        // Removed: lazy={true}
+        // Removed: preloadImages={false}
         watchSlidesProgress
       >
         {allImages.map((image) => (
