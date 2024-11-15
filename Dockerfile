@@ -22,7 +22,6 @@ RUN pnpm i @saleor/macaw-ui
 # Builder stage to build the application
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Set environment variables for Next.js build
