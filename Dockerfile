@@ -18,7 +18,7 @@ RUN PNPM_VERSION=$(jq -r '.engines.pnpm' package.json | sed -E 's/[^0-9.]//g') &
     corepack prepare pnpm@$PNPM_VERSION --activate
 
 # Install dependencies using pnpm
-RUN pnpm install --frozen-lockfile --prefer-offline
+RUN pnpm install 
 
 # Rebuild the source code only when needed
 FROM base AS builder
