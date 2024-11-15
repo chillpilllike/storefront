@@ -9,7 +9,7 @@ import { invariant } from 'ts-invariant';
 import { type WithContext, type Product } from 'schema-dts';
 import { AddButton } from './AddButton';
 import { VariantSelector } from '@/ui/components/VariantSelector';
-import { ProductImageGallery } from '@/app/[channel]/(main)/products/[slug]/ProductImageGallery'; // Ensure correct import path
+import { ProductImageGallery } from '@/app/[channel]/(main)/products/[slug]/ProductImageGallery';
 import { executeGraphQL } from '@/lib/graphql';
 import { formatMoney, formatMoneyRange } from '@/lib/utils';
 import {
@@ -22,6 +22,7 @@ import * as Checkout from '@/lib/checkout';
 import { AvailabilityMessage } from '@/ui/components/AvailabilityMessage';
 import { ProductsPerPage } from '@/app/related';
 import { ProductList } from '@/ui/components/ProductList';
+import { GalleryImage } from '@/types'; // If using a separate types file
 
 const parser = edjsHTML();
 
@@ -105,19 +106,19 @@ export default async function Page({
     notFound();
   }
 
-  // **Map `images` to conform to the `Image` interface**
-  const images: Image[] = (product.images || []).map((img: any) => ({
+  // **Map `images` to conform to the `GalleryImage` interface**
+  const images: GalleryImage[] = (product.images || []).map((img: any) => ({
     id: img.id,
     url: img.url,
-    alt: img.alt ?? 'Product Image', // Use '??' to handle null values
+    alt: img.alt ?? 'Product Image', // Ensures alt is a string or undefined
   }));
 
-  // **Map `thumbnail` to conform to the `Image` interface or set to undefined**
-  const firstImage: Image | undefined = product.thumbnail
+  // **Map `thumbnail` to conform to the `GalleryImage` interface or set to undefined**
+  const firstImage: GalleryImage | undefined = product.thumbnail
     ? {
         id: product.thumbnail.id,
         url: product.thumbnail.url,
-        alt: product.thumbnail.alt ?? 'Product Image', // Use '??' to handle null values
+        alt: product.thumbnail.alt ?? 'Product Image', // Ensures alt is a string or undefined
       }
     : undefined;
 
