@@ -18,8 +18,7 @@ export async function LoginForm() {
 					const { data } = await getServerAuthClient().signIn({ email, password }, { cache: "no-store" });
 
 					if (data.tokenCreate.errors.length > 0) {
-						// setErrors(data.tokenCreate.errors.map((error) => error.message));
-						// setFormValues(DefaultValues);
+						// Handle errors if necessary
 					}
 				}}
 			>
@@ -55,7 +54,14 @@ export async function LoginForm() {
 					Log In
 				</button>
 			</form>
-			<div></div>
+
+			{/* Text Below the Login Button */}
+			<div className="mt-4 text-center">
+				<p className="text-sm text-neutral-600">
+					Not a member yet?{" "}
+					<span className="text-blue-600 font-semibold">Signup at the checkout page!</span>
+				</p>
+			</div>
 		</div>
 	);
 }
