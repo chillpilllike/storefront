@@ -14,7 +14,8 @@ import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument, P
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 import { ProductsPerPage } from "@/app/related";
-import { ProductList } from "@/ui/components/ProductList"; // Ensure this import is necessary
+import { ProductList } from "@/ui/components/ProductList";
+import { Accordion, AccordionItem } from "@saleor/macaw-ui"; // Added import
 
 const parser = edjsHTML();
 
@@ -239,6 +240,18 @@ export default async function Page({
                                 ))}
                             </div>
                         )}
+
+                        {/* New Accordions Section */}
+                        <div className="mt-8 px-4">
+                            <Accordion>
+                                <AccordionItem title="Shipping">
+                                    <p>This is a shipping short policy.</p>
+                                </AccordionItem>
+                                <AccordionItem title="Refund">
+                                    <p>This is a refund short policy.</p>
+                                </AccordionItem>
+                            </Accordion>
+                        </div>
                     </div>
                 </div>
             </form>
