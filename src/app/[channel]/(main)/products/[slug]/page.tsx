@@ -24,8 +24,8 @@ import { ProductList } from "@/ui/components/ProductList"; // Ensure this import
 
 // New Imports for Image Gallery
 import Image from "next/image";
-import { Carousel, CarouselContent, CarouselItem } from "@nimara/ui/components/carousel";
-import { ProductImagePlaceholder } from "@/components/product-image-placeholder";
+import { Carousel, CarouselContent, CarouselItem } from "./carousel";
+import { ProductImagePlaceholder } from "./product-image-placeholder";
 
 // Initialize Editor.js HTML Parser
 const parser = edjsHTML();
