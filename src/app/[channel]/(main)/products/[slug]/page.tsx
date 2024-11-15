@@ -22,7 +22,7 @@ import * as Checkout from '@/lib/checkout';
 import { AvailabilityMessage } from '@/ui/components/AvailabilityMessage';
 import { ProductsPerPage } from '@/app/related';
 import { ProductList } from '@/ui/components/ProductList';
-import { GalleryImage } from '@/types'; // If using a separate types file
+import { GalleryImage } from './GalleryImage'; // If using a separate types file
 
 const parser = edjsHTML();
 
