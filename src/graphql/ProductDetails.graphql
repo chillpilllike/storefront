@@ -1,48 +1,48 @@
- query ProductDetails($slug: String!, $channel: String!) {
-    product(slug: $slug, channel: $channel) {
+# Example GraphQL Query
+query ProductDetails($slug: String!, $channel: String!) {
+  product(slug: $slug, channel: $channel) {
+    id
+    name
+    description
+    images {
+      id
+      url
+      alt
+    }
+    thumbnail {
+      id
+      url
+      alt
+    }
+    variants {
       id
       name
-      description
-      seoTitle
-      seoDescription
-      thumbnail {
-        url
-        alt
-      }
-      images {
-        id
-        url
-        alt
-      }
-      variants {
-        id
-        name
-        quantityAvailable
-        pricing {
-          price {
-            gross {
-              amount
-              currency
-            }
-          }
-        }
-      }
       pricing {
-        priceRange {
-          start {
-            gross {
-              amount
-              currency
-            }
-          }
-          stop {
-            gross {
-              amount
-              currency
-            }
+        price {
+          gross {
+            amount
+            currency
           }
         }
       }
-      # ... any other necessary fields
+      quantityAvailable
+    }
+    seoDescription
+    pricing {
+      priceRange {
+        start {
+          gross {
+            amount
+            currency
+          }
+        }
+        stop {
+          gross {
+            amount
+            currency
+          }
+        }
+      }
     }
   }
+}
