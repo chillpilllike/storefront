@@ -85,7 +85,7 @@ export async function Footer({ channel }: { channel: string }) {
             return (
               <div key={item.id}>
                 <h3 className="text-sm font-semibold text-neutral-900">
-                  {item.name}
+                  hkjhk
                 </h3>
                 <ul className="mt-4 space-y-4 [&>li]:text-neutral-500">
                   {item.children?.map((child) => {
