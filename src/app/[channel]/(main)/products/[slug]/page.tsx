@@ -94,7 +94,7 @@ export default async function Page({
 		notFound();
 	}
 
-	const firstImage = product.thumbnail;
+	// const firstImage = product.thumbnail;
 	const description = product?.description ? parser.parse(JSON.parse(product?.description)) : null;
 
 	const variants = product.variants;
