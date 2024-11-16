@@ -1,4 +1,5 @@
 import { type ReactNode } from "react";
+import Image from "next/image";
 import { useSummaryLineLineAttributesText, getSummaryLineProps } from "./utils";
 import { type CheckoutLineFragment, type OrderLineFragment } from "@/checkout/graphql";
 import { PhotoIcon } from "@/checkout/ui-kit/icons";
@@ -19,7 +20,7 @@ export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 		<li key={line.id} className="flex border-b py-4 last:border-none" data-testid="SummaryItem">
 			<div className="aspect-square h-16 w-16 flex-shrink-0 overflow-hidden rounded border bg-neutral-50 md:h-24 md:w-24 md:bg-white">
 				{productImage ? (
-					<img
+					<Image
 						src={productImage.url}
 						alt={productImage.alt ?? ""}
 						className="h-full w-full object-contain object-center"
