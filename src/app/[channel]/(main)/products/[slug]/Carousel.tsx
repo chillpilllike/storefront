@@ -77,7 +77,10 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ images }) => {
 					))}
 				</div>
 				<button
-					onClick={handlePrevious}
+					onClick={(e) => {
+						e.preventDefault();
+						handlePrevious();
+					}}
 					disabled={selectedIndex === 0}
 					className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white bg-opacity-50 p-2 transition-all hover:bg-opacity-75 disabled:opacity-30"
 					aria-label="Previous image"
@@ -93,7 +96,10 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ images }) => {
 					</svg>
 				</button>
 				<button
-					onClick={handleNext}
+					onClick={(e) => {
+						e.preventDefault();
+						handleNext();
+					}}
 					disabled={selectedIndex === images.length - 1}
 					className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white bg-opacity-50 p-2 transition-all hover:bg-opacity-75 disabled:opacity-30"
 					aria-label="Next image"
