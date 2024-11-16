@@ -6,13 +6,13 @@ import xss from "xss";
 import { invariant } from "ts-invariant";
 import { type WithContext, type Product } from "schema-dts";
 import { AddButton } from "./AddButton";
-import Carousel from "./Carousel";
 import { VariantSelector } from "@/ui/components/VariantSelector";
 import { executeGraphQL } from "@/lib/graphql";
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
+import Carousel from "./Carousel";
 
 export async function generateMetadata(
   {
@@ -185,7 +185,9 @@ export default async function Page({
             <Carousel
               images={product.media.map((i) => ({
                 url: i.url,
-                alt: i.alt || "Product image", // Ensure meaningful alt text
+                alt: "Product image", // Default alt text
+                // If you have a 'title' or another descriptive property, use it:
+                // alt: i.title || "Product image",
               }))}
             />
           )}
