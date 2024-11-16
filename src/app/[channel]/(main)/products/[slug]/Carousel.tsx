@@ -1,4 +1,3 @@
-/* eslint-disable import/no-default-export */
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
@@ -113,7 +112,10 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ images }) => {
 				{images.map((image, index) => (
 					<button
 						key={index}
-						onClick={() => setSelectedIndex(index)}
+						onClick={(e) => {
+							e.preventDefault();
+							setSelectedIndex(index);
+						}}
 						className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md transition-all ${
 							selectedIndex === index ? "ring-2 ring-orange-500" : "ring-1 ring-gray-200 hover:ring-gray-300"
 						}`}
