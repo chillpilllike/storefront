@@ -116,14 +116,11 @@ export async function Footer({ channel }: { channel: string }) {
                         </li>
                       );
                     }
-                    if (child.url) {
-                      return (
-                        <li key={child.id} className="text-sm">
-                          <LinkWithChannel href={child.url}>{child.name}</LinkWithChannel>
-                        </li>
-                      );
-                    }
-                    return null;
+                    return (
+                      <li key={child.id} className="text-sm">
+                        Info.
+                      </li>
+                    );
                   })}
                 </ul>
               </div>
