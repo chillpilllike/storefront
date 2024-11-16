@@ -1,3 +1,5 @@
+/* eslint-disable import/no-default-export */
+
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
