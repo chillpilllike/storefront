@@ -26,4 +26,4 @@ RUN pnpm build
 
 
 # Start the application in production mode
-CMD ["pnpm", "start"]
+CMD ["pnpm", "dev"]
