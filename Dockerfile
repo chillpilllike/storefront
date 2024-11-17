@@ -23,6 +23,7 @@ RUN pnpm install --frozen-lockfile --prefer-offline
 # Note: pnpm does not support a --no-cache flag for these commands
 RUN pnpm i @saleor/macaw-ui
 RUN pnpm i react-responsive-carousel
+RUN pnpm install tailwindcss postcss autoprefixer
 
 # Builder stage to build the application
 FROM base AS builder
