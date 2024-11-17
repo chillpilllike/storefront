@@ -19,7 +19,7 @@ COPY package.json pnpm-lock.yaml ./
 # RUN corepack prepare pnpm@$(jq -r '.engines.pnpm' package.json | sed -E 's/[^0-9.]//g') --activate
 RUN pnpm install --frozen-lockfile --prefer-offline
 
-RUN pnpm add -g @saleor/macaw-ui
+RUN pnpm i @saleor/macaw-ui
 RUN pnpm add -g react-responsive-carousel
 
 
