@@ -9,12 +9,14 @@ WORKDIR /app
 
 # Enabling Corepack to manage package managers as specified in package.json
 RUN corepack enable
+RUN corepack prepare pnpm@9.6.0 --activate  # Explicitly install the specified pnpm version
+
 
 # Copy only the necessary files for installing dependencies
 COPY package.json pnpm-lock.yaml ./
 
 # Install PNPM via Corepack and install dependencies
-RUN corepack prepare pnpm@$(jq -r '.engines.pnpm' package.json | sed -E 's/[^0-9.]//g') --activate
+# RUN corepack prepare pnpm@$(jq -r '.engines.pnpm' package.json | sed -E 's/[^0-9.]//g') --activate
 RUN pnpm install --frozen-lockfile --prefer-offline
 
 RUN pnpm i @saleor/macaw-ui
