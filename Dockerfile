@@ -18,13 +18,6 @@ RUN corepack prepare pnpm@$(jq -r '.engines.pnpm' package.json | sed -E 's/[^0-9
 RUN pnpm install --frozen-lockfile --prefer-offline
 
 RUN pnpm i @saleor/macaw-ui
-RUN pnpm install @radix-ui/react-slot
-RUN pnpm install class-variance-authority
-RUN pnpm install embla-carousel-react
-RUN pnpm install tailwind-merge
-RUN pnpm install swiper@11.1.14
-
-
 
 # Builder stage to build the application
 FROM base AS builder
@@ -44,7 +37,7 @@ RUN pnpm build
 # Production stage to run the application
 FROM base AS runner
 WORKDIR /app
-ENV NODE_ENV=development
+# ENV NODE_ENV=development
 
 # Create system user and group for running the application
 RUN addgroup --system --gid 1001 nodejs
