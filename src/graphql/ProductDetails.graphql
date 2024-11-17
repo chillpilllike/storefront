@@ -6,9 +6,6 @@ query ProductDetails($slug: String!, $channel: String!) {
 		description
 		seoTitle
 		seoDescription
-		media {
-			url
-		}
 		thumbnail(size: 1024, format: WEBP) {
 			url
 			alt
