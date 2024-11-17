@@ -4,7 +4,7 @@ FROM node:20-alpine AS base
 WORKDIR /app
 
 # Install additional dependencies
-RUN pnpm add @saleor/macaw-ui react-responsive-carousel
+RUN pnpm i @saleor/macaw-ui react-responsive-carousel
 
 RUN pnpm install 
 
