@@ -1,7 +1,7 @@
 # Use an official Node.js runtime as a parent image
 FROM node:20-alpine AS base
 
-# Install dependencies only when needed
+# Install dependencies only when needed with no-cache
 RUN apk add --no-cache libc6-compat git
 
 # Setup working directory
@@ -11,17 +11,17 @@ WORKDIR /app
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate  # Explicitly install the specified pnpm version
 
-
 # Copy only the necessary files for installing dependencies
 COPY package.json pnpm-lock.yaml ./
 
-# Install PNPM via Corepack and install dependencies
-# RUN corepack prepare pnpm@$(jq -r '.engines.pnpm' package.json | sed -E 's/[^0-9.]//g') --activate
+# Install PNPM dependencies with existing flags (--frozen-lockfile and --prefer-offline)
+# Note: pnpm does not support a --no-cache flag
 RUN pnpm install --frozen-lockfile --prefer-offline
 
+# Install additional packages
+# Note: pnpm does not support a --no-cache flag for these commands
 RUN pnpm i @saleor/macaw-ui
 RUN pnpm add -g react-responsive-carousel
-
 
 # Builder stage to build the application
 FROM base AS builder
@@ -59,5 +59,3 @@ USER nextjs
 
 # Command to run the application
 CMD ["node", "server.js"]
-
-
