@@ -21,7 +21,7 @@ RUN pnpm install --frozen-lockfile --prefer-offline
 # Install additional packages
 # Note: pnpm does not support a --no-cache flag for these commands
 RUN pnpm i @saleor/macaw-ui
-RUN pnpm add -g react-responsive-carousel
+RUN pnpm i react-responsive-carousel
 
 # Builder stage to build the application
 FROM base AS builder
