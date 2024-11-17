@@ -18,6 +18,8 @@ RUN pnpm i @saleor/macaw-ui react-responsive-carousel
 
 RUN pnpm install 
 
+COPY . . 
+
 
 # Build the application
 RUN pnpm build
