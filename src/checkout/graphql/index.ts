@@ -1,5 +1,3 @@
-/* eslint-disable import/no-named-as-default */
-
 // THIS FILE IS GENERATED WITH `pnpm generate`
 import gql from "graphql-tag";
 import * as Urql from "urql";
