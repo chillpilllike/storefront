@@ -18,6 +18,8 @@ RUN corepack prepare pnpm@$(jq -r '.engines.pnpm' package.json | sed -E 's/[^0-9
 RUN pnpm install --frozen-lockfile --prefer-offline
 
 RUN pnpm i @saleor/macaw-ui
+RUN pnpm react-responsive-carousel
+
 
 # Builder stage to build the application
 FROM base AS builder
