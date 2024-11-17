@@ -20,7 +20,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prefer-offline
 
 RUN pnpm i @saleor/macaw-ui
-RUN pnpm react-responsive-carousel
+RUN pnpm react-responsive-carousel@3.2.23
 
 
 # Builder stage to build the application
