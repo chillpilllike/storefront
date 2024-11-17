@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Enabling Corepack to manage package managers as specified in package.json
 RUN corepack enable
-RUN corepack prepare pnpm@9.6.0 --activate  # Explicitly install the specified pnpm version
+RUN corepack prepare pnpm@9.13.2 --activate  # Explicitly install the specified pnpm version
 
 
 # Copy only the necessary files for installing dependencies
