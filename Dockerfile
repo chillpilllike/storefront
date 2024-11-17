@@ -2,7 +2,8 @@
 FROM node:20-alpine AS base
 
 # Install dependencies only when needed with no-cache
-RUN apk add --no-cache libc6-compat git
+
+RUN apk add --update libc6-compat git && rm -rf /var/cache/apk/*
 
 # Setup working directory
 WORKDIR /app
