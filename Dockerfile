@@ -41,7 +41,7 @@ RUN pnpm build
 # Production stage to run the application
 FROM base AS runner
 WORKDIR /app
-# ENV NODE_ENV=development
+ENV NODE_ENV=development
 
 # Create system user and group for running the application
 RUN addgroup --system --gid 1001 nodejs
