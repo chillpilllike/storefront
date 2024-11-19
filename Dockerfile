@@ -28,7 +28,7 @@ COPY . .
 # Remove any cache folders before building
 RUN rm -rf .next node_modules/.cache
 
-RUN npm i sharp
+RUN yarn add sharp
 
 # Build the Next.js application
 ENV NEXT_OUTPUT=standalone
