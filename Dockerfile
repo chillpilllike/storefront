@@ -11,12 +11,13 @@ WORKDIR /app
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
 
-RUN pnpm install sharp
+
 
 # Install pnpm and dependencies
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
 RUN pnpm i --frozen-lockfile --prefer-offline
+RUN pnpm i sharp
 
 # Rebuild the source code only when needed
 FROM base AS builder
