@@ -9,7 +9,10 @@ WORKDIR /app
 # Get PNPM version from package.json
 
 COPY package.json pnpm-lock.yaml ./
-RUN yarn global add pnpm@9.6.0
+
+RUN corepack enable
+RUN corepack prepare pnpm@9.6.0 --activate
+# RUN yarn global add pnpm@9.6.0
 RUN pnpm i --frozen-lockfile --prefer-offline
 
 # Rebuild the source code only when needed
@@ -30,7 +33,9 @@ ARG NEXT_PUBLIC_STOREFRONT_URL
 ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
 
 # Get PNPM version from package.json
-RUN yarn global add pnpm@9.6.0
+#cRUN yarn global add pnpm@9.6.0
+RUN corepack enable
+RUN corepack prepare pnpm@9.6.0 --activate
 
 RUN pnpm build
 
