@@ -14,6 +14,8 @@ WORKDIR /app
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
 
+RUN rm -rf .next node_modules/.cache
+
 
 
 # Install pnpm and dependencies
@@ -29,7 +31,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Remove any cache folders before building
-RUN rm -rf .next node_modules/.cache
+
 
 # Build the Next.js application
 ENV NEXT_OUTPUT=standalone
