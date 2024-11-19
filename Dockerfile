@@ -1,6 +1,9 @@
 # Base Node image
 FROM node:20-alpine AS base
 
+# Disable Husky during Docker build
+ENV HUSKY=0
+
 # Install dependencies only when needed
 FROM base AS deps
 # Install necessary dependencies for sharp
