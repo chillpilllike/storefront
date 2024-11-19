@@ -87,7 +87,7 @@ export async function Footer({ channel }: { channel: string }) {
   <img 
     src="https://secretgreen9.s3.ap-southeast-2.amazonaws.com/payment-img.png" 
     alt="Secure Payments" 
-    className="mx-auto mb-2 w-16 h-16" 
+    className="mx-auto mb-2 max-w-full h-auto" 
   />
   <p className="flex gap-1 text-sm text-neutral-500">
     Secure & Encrypted Payments.
