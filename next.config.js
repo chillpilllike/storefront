@@ -3,7 +3,9 @@ const config = {
 	images: {
 		remotePatterns: [
 			{
-				hostname: "*",
+				protocol: "https",
+				hostname: "secretgreen9.s3.ap-southeast-2.amazonaws.com",
+				pathname: "/**", // Allow all paths in the bucket
 			},
 		],
 	},
