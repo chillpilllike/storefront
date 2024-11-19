@@ -2,11 +2,9 @@ FROM node:20-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-# Add necessary packages for sharp
 RUN apk add --no-cache libc6-compat python3 make g++
 WORKDIR /app
 
-# Copy package files
 COPY package.json pnpm-lock.yaml ./
 
 RUN corepack enable
@@ -47,6 +45,13 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
+
+# Create the .next/cache directory and set correct ownership
+RUN mkdir -p .next/cache
+RUN chown -R nextjs:nodejs .next
+
+# Ensure permissions for the working directory
+RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 
