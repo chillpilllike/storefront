@@ -4,15 +4,20 @@ const config = {
 		remotePatterns: [
 			{
 				protocol: "https",
-				hostname: "secretgreen9.s3.ap-southeast-2.amazonaws.com",
-				pathname: "/**", // Allow all paths in the bucket
+				hostname: "secretgreen9.s3.ap-southeast-2.amazonaws.com", // S3 bucket
+				pathname: "/**", // Allow all paths
+			},
+			{
+				protocol: "https",
+				hostname: "secretgreen-secretgreen-backend.g5edov.easypanel.host", // Backend hostname
+				pathname: "/**", // Allow all paths
 			},
 		],
 	},
 	experimental: {
 		typedRoutes: false,
 	},
-	// used in the Dockerfile
+	// Used in the Dockerfile
 	output:
 		process.env.NEXT_OUTPUT === "standalone"
 			? "standalone"
