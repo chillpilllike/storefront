@@ -83,6 +83,7 @@ export async function Footer({ channel }: { channel: string }) {
 
 				<div className="flex flex-col justify-between border-t border-neutral-200 py-10 sm:flex-row">
 					<p className="text-sm text-neutral-500">Copyright &copy; {currentYear} Secretgreen.com.au</p>
+					<p className="text-sm text-neutral-500">ABN 28 069 966 859</p>
 					<div className="text-center">
   <img 
     src="https://secretgreen9.s3.ap-southeast-2.amazonaws.com/payment-img.png" 
