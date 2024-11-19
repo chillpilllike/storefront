@@ -17,7 +17,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
 RUN pnpm i --frozen-lockfile --prefer-offline
-RUN pnpm i sharp
+
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -27,6 +27,8 @@ COPY . .
 
 # Remove any cache folders before building
 RUN rm -rf .next node_modules/.cache
+
+RUN pnpm add sharp
 
 # Build the Next.js application
 ENV NEXT_OUTPUT=standalone
