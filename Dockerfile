@@ -1,12 +1,17 @@
+# Base Node image
 FROM node:20-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat python3 make g++
+# Install necessary dependencies for sharp
+RUN apk add --no-cache libc6-compat python3 make g++ libpng-dev jpeg-dev
+
 WORKDIR /app
 
+# Copy package files
 COPY package.json pnpm-lock.yaml ./
 
+# Install pnpm and dependencies
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
 RUN pnpm i --frozen-lockfile --prefer-offline
@@ -41,16 +46,14 @@ ENV NODE_ENV production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy necessary files for the standalone build
+# Copy necessary files for standalone build
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Create the .next/cache directory and set correct ownership
+# Ensure correct permissions for .next/cache
 RUN mkdir -p .next/cache
 RUN chown -R nextjs:nodejs .next
-
-# Ensure permissions for the working directory
 RUN chown -R nextjs:nodejs /app
 
 USER nextjs
