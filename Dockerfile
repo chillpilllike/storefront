@@ -7,12 +7,10 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Get PNPM version from package.json
-
 COPY package.json pnpm-lock.yaml ./
 
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
-# RUN yarn global add pnpm@9.6.0
 RUN pnpm i --frozen-lockfile --prefer-offline
 
 # Rebuild the source code only when needed
@@ -20,6 +18,9 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Remove .next and other cache folders
+RUN rm -rf .next node_modules/.cache
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -33,7 +34,6 @@ ARG NEXT_PUBLIC_STOREFRONT_URL
 ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
 
 # Get PNPM version from package.json
-#cRUN yarn global add pnpm@9.6.0
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
 
@@ -55,8 +55,6 @@ ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# COPY --from=builder /app/public ./public
-
 # Set the correct permission for prerender cache
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
@@ -67,6 +65,5 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
-
 
 CMD ["node", "server.js"]
