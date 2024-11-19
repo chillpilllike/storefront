@@ -1,4 +1,4 @@
-import Link from "next/link";
+// import Link from "next/link";
 import Image from "next/image";
 import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { ChannelSelect } from "./ChannelSelect";
