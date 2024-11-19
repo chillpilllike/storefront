@@ -51,6 +51,8 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
+ENV NEXT_SHARP_PATH=/app/node_modules/sharp
+
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
