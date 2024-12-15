@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { checkoutId, channel, paymentIntentId } = await req.json();
+    const { checkoutId, channel, paymentIntentId, customerDetails } = await req.json();
 
     const response = await fetch(`${process.env.SALEOR_API_URL}/graphql/`, {
       method: "POST",
@@ -20,6 +20,27 @@ export async function POST(req: NextRequest) {
                 metadata: [
                   { key: "StripePaymentId", value: "${paymentIntentId}" }
                 ]
+                userEmail: "${customerDetails.email}"
+                billingAddress: {
+                  firstName: "${customerDetails.billingAddress.first_name}"
+                  lastName: "${customerDetails.billingAddress.last_name}"
+                  streetAddress1: "${customerDetails.billingAddress.line1}"
+                  streetAddress2: "${customerDetails.billingAddress.line2 || ""}"
+                  city: "${customerDetails.billingAddress.city}"
+                  postalCode: "${customerDetails.billingAddress.postal_code}"
+                  country: "${customerDetails.billingAddress.country}"
+                  phone: "${customerDetails.billingAddress.phone || ""}"
+                }
+                shippingAddress: {
+                  firstName: "${customerDetails.shippingAddress.first_name}"
+                  lastName: "${customerDetails.shippingAddress.last_name}"
+                  streetAddress1: "${customerDetails.shippingAddress.line1}"
+                  streetAddress2: "${customerDetails.shippingAddress.line2 || ""}"
+                  city: "${customerDetails.shippingAddress.city}"
+                  postalCode: "${customerDetails.shippingAddress.postal_code}"
+                  country: "${customerDetails.shippingAddress.country}"
+                  phone: "${customerDetails.shippingAddress.phone || ""}"
+                }
               }
             ) {
               order {
