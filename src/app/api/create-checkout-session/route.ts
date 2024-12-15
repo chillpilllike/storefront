@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2022-11-15",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2022-11-15" });
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,7 +14,7 @@ export async function POST(req: NextRequest) {
           name: item.name,
           images: [item.imageUrl],
         },
-        unit_amount: Math.round(item.unitPrice * 100), // Convert to cents
+        unit_amount: Math.round(item.unitPrice * 100),
       },
       quantity: item.quantity,
     }));
@@ -25,6 +23,11 @@ export async function POST(req: NextRequest) {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
+      customer_email: "customer@example.com", // Optional pre-filled email
+      billing_address_collection: "required",
+      shipping_address_collection: {
+        allowed_countries: ["US", "AU", "GB", "CA"], // Adjust as per your needs
+      },
       success_url: `${process.env.NEXT_PUBLIC_HOST}/order-confirmation?checkoutId=${checkoutId}&channel=${channel}&sessionId={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_HOST}/cart`,
       metadata: { checkoutId, channel },
