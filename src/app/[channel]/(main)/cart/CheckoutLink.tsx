@@ -6,7 +6,7 @@ type Props = {
   disabled?: boolean;
   checkoutId?: string;
   channel: string;
-  items: Array<any>; // Pass cart items here
+  items: Array<any>; // Array of items to send to the Stripe Checkout API
   className?: string;
 };
 
@@ -14,25 +14,33 @@ export const CheckoutLink = ({ disabled, checkoutId, channel, items, className =
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
-    if (disabled || !checkoutId || !items?.length) return;
+    if (disabled || !checkoutId || !items.length) return;
 
     setLoading(true);
 
     try {
-      const res = await fetch("/api/create-checkout-session", {
+      // Call the create-checkout-session API to create a Stripe Checkout session
+      const response = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items, checkoutId, channel }),
+        body: JSON.stringify({
+          items,
+          checkoutId,
+          channel,
+        }),
       });
 
-      const data = await res.json();
+      const data = await response.json();
+
       if (data.url) {
+        // Redirect to the Stripe-hosted checkout page
         window.location.href = data.url;
       } else {
-        throw new Error("Failed to create Stripe Checkout session");
+        throw new Error("Failed to create Stripe Checkout session.");
       }
     } catch (error) {
       console.error(error);
+      alert("Error redirecting to checkout. Please try again.");
     } finally {
       setLoading(false);
     }
