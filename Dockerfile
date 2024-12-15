@@ -1,72 +1,39 @@
-# Base Node image
+# Base image with Node.js 20
 FROM node:20-alpine AS base
 
-# Disable Husky during Docker build
-ENV HUSKY=0
+# Install dependencies for building the application
+RUN apk add --no-cache git bash libc6-compat python3 py3-pip
 
-# Install dependencies only when needed
-FROM base AS deps
-# Install necessary dependencies for sharp
-RUN apk add --no-cache libc6-compat python3 make g++ libpng-dev jpeg-dev
-
+# Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
-
-RUN rm -rf .next node_modules/.cache
+# Clone the repository
+RUN git clone https://github.com/saleor/storefront.git /app
 
 
-
-# Install pnpm and dependencies
+# Install pnpm globally
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
-RUN pnpm i --frozen-lockfile --prefer-offline
-RUN pnpm add sharp
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+RUN npm install stripe
+RUN npm install @stripe/stripe-js
 
-# Remove any cache folders before building
+# Install dependencies
+RUN pnpm install
 
+# Expose the default port for the app
+EXPOSE 3000
 
-# Build the Next.js application
-ENV NEXT_OUTPUT=standalone
+# Set environment variables for Saleor
 ARG NEXT_PUBLIC_SALEOR_API_URL
 ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
-ARG NEXT_PUBLIC_STOREFRONT_URL
-ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
 
-RUN corepack enable
-RUN corepack prepare pnpm@9.6.0 --activate
-RUN pnpm add sharp
-RUN pnpm build
+# Build the application
+RUN pnpm run build
 
-# Production image, copy all the files and run next
-FROM base AS runner
-WORKDIR /app
+# Start the production server
+CMD ["pnpm", "start"]
 
-ENV NODE_ENV production
-
-ENV NEXT_SHARP_PATH=/app/node_modules/sharp
-
-# Create a non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# Copy necessary files for standalone build
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
-
-# Ensure correct permissions for .next/cache
-RUN mkdir -p .next/cache
-RUN chown -R nextjs:nodejs .next
-RUN chown -R nextjs:nodejs /app
-
-USER nextjs
-
-CMD ["node", "server.js"]
+# Development stage (Optional)
+# Uncomment the following if you want to use the development server
+# CMD ["pnpm", "dev"]
