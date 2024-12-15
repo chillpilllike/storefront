@@ -12,7 +12,7 @@ const OrderConfirmationPage = () => {
   const sessionId = searchParams.get("sessionId");
 
   useEffect(() => {
-    const createOrder = async () => {
+    const finalizeOrder = async () => {
       try {
         if (!checkoutId || !channel || !sessionId) {
           setError("Invalid request. Missing required parameters.");
@@ -21,43 +21,48 @@ const OrderConfirmationPage = () => {
         }
 
         // Verify Stripe payment
-        const stripeVerification = await fetch("/api/verify-payment", {
+        const paymentResponse = await fetch("/api/verify-payment", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sessionId }),
         });
 
-        const stripeResponse = await stripeVerification.json();
-        if (!stripeResponse.success) {
-          setError("Payment verification failed. Please contact support.");
+        const paymentData = await paymentResponse.json();
+        if (!paymentData.success) {
+          setError("Payment verification failed.");
           setLoading(false);
           return;
         }
 
-        // Create order in Saleor
-        const saleorOrder = await fetch("/api/create-saleor-order", {
+        // Create Saleor order
+        const orderResponse = await fetch("/api/create-saleor-order", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ checkoutId, channel, paymentIntentId: stripeResponse.paymentIntentId }),
+          body: JSON.stringify({
+            checkoutId,
+            channel,
+            paymentIntentId: paymentData.paymentIntentId,
+            customerDetails: paymentData.customerDetails,
+          }),
         });
 
-        const saleorResponse = await saleorOrder.json();
-        if (!saleorResponse.success) {
-          setError("Failed to create order in Saleor. Please contact support.");
+        const orderData = await orderResponse.json();
+        if (!orderData.success) {
+          setError("Failed to create order in Saleor.");
           setLoading(false);
           return;
         }
 
-        // Redirect to final confirmation page or display order details
-        router.push(`/order-details/${saleorResponse.orderId}`);
+        // Redirect to order details page
+        router.push(`/order-details/${orderData.orderId}`);
       } catch (e: any) {
         console.error(e);
-        setError("Something went wrong. Please contact support.");
+        setError("Something went wrong.");
         setLoading(false);
       }
     };
 
-    createOrder();
+    finalizeOrder();
   }, [checkoutId, channel, sessionId]);
 
   if (loading) {
@@ -68,7 +73,7 @@ const OrderConfirmationPage = () => {
     return <div>Error: {error}</div>;
   }
 
-  return null; // Will redirect on success
+  return null;
 };
 
 export default OrderConfirmationPage;
