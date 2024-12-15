@@ -15,8 +15,7 @@ RUN git clone https://github.com/saleor/storefront.git /app
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
 
-RUN npm install stripe
-RUN npm install @stripe/stripe-js
+RUN npm install --save stripe @stripe/stripe-js next
 
 # Install dependencies
 RUN pnpm install
