@@ -10,12 +10,13 @@ WORKDIR /app
 # Clone the repository
 RUN git clone https://github.com/saleor/storefront.git /app
 
+RUN apt-get update && apt-get install -y python3 make g++ && apt-get clean
 
 # Install pnpm globally
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
 
-RUN npm install --save stripe @stripe/stripe-js next
+RUN pnpm add stripe @stripe/stripe-js next
 
 # Install dependencies
 RUN pnpm install
