@@ -1,8 +1,8 @@
 # Base image with Node.js 20
-FROM node:20-alpine AS base
+FROM node:18-alpine AS base
 
 # Install dependencies for building the application
-RUN apk add --no-cache git bash libc6-compat python3 py3-pip
+RUN apk add --no-cache git bash libc6-compat python3 py3-pip make g++
 
 # Set working directory
 WORKDIR /app
@@ -10,16 +10,14 @@ WORKDIR /app
 # Clone the repository
 RUN git clone https://github.com/saleor/storefront.git /app
 
-RUN apt-get update && apt-get install -y python3 make g++ && apt-get clean
+# Enable corepack and install pnpm globally
+RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
 
-# Install pnpm globally
-RUN corepack enable
-RUN corepack prepare pnpm@9.6.0 --activate
+# Install project dependencies and Stripe packages
+RUN pnpm install stripe @stripe/stripe-js next
 
-RUN pnpm add stripe @stripe/stripe-js next
-
-# Install dependencies
-RUN pnpm install
+# Install remaining dependencies
+RUN pnpm install --frozen-lockfile
 
 # Expose the default port for the app
 EXPOSE 3000
