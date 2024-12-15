@@ -96,10 +96,17 @@ export default async function Page({ params }: { params: { channel: string } }) 
 					</div>
 					<div className="mt-10 text-center">
 						<CheckoutLink
-							checkoutId={checkoutId}
-							disabled={!checkout.lines.length}
-							className="w-full sm:w-1/3"
-						/>
+  checkoutId={checkoutId}
+  channel={params.channel}
+  items={checkout.lines.map((item) => ({
+    name: item.variant?.product?.name,
+    imageUrl: item.variant?.product?.thumbnail?.url || "",
+    unitPrice: item.variant?.pricing?.price?.gross?.amount || 0,
+    quantity: item.quantity,
+    currency: item.variant?.pricing?.price?.gross?.currency || "USD",
+  }))}
+  className="w-full sm:w-1/3"
+/>
 					</div>
 				</div>
 			</form>
